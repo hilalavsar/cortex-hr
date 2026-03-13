@@ -60,4 +60,3 @@ uvicorn app.main:app --reload
 - **LLM:** Mistral 7B (LM Studio)
 - **Vektör DB:** Qdrant
 - **Auth:** JWT
-```
