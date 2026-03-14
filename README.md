@@ -11,21 +11,33 @@ Tüm veriler şirket sunucusunda kalır — dışarıya çıkmaz.
 - Çalışan: "Kaç gün iznim kaldı?" → anında yanıt
 - Yönetici: Ekibinin izin takvimini görebilir
 - İK: CV havuzunu sorgulayabilir, aday karşılaştırması yapabilir
-- Herkes: Şirket politikalarını, hiyerarşiyi sorgulayabilir
+- Herkes: Şirket politikalarını ve hiyerarşiyi sorgulayabilir
 
 ---
 
 ## Mimari
+
 ```
-Kullanıcı → FastAPI → Güvenlik Katmanı → Mistral (lokal) → Yanıt
-                           ↓
-                      Qdrant (bellek)
+Kullanıcı → Next.js Arayüzü → FastAPI → Güvenlik Katmanı → Mistral (lokal) → Yanıt
+                                              ↓
+                                        Qdrant (bellek)
 ```
 
-- **LLM:** Mistral 7B — şirket bilgisayarında çalışır, internet gerekmez
+- **LLM:** Mistral 7B — LM Studio üzerinden lokal çalışır, internet gerekmez
 - **RAG:** Qdrant vektör veritabanı — İK belgeleri, politikalar buraya yüklenir
 - **Auth:** JWT token — her kullanıcı kendi yetkisi kadar görür
-- **Güvenlik:** OWASP AI Top 10 testleri ile doğrulanmış
+- **Güvenlik:** 3 katmanlı guardrail sistemi (OWASP AI Top 10)
+
+---
+
+## Güvenlik Katmanları
+
+| Katman | Görev |
+|--------|-------|
+| Katman 1 — Giriş Denetimi | Prompt injection, hassas veri sorgusu, rol yapma, sahte yetki tespiti |
+| Katman 2 — Uzunluk Denetimi | Aşırı uzun input/output engelleme (DoS koruması) |
+| Katman 3 — Çıkış Denetimi | PII sızıntısı, ters metin, akrostiş, aşırı boşluk tespiti |
+| Ban Sistemi | Tekrarlı ihlalde otomatik erişim askıya alma |
 
 ---
 
@@ -36,27 +48,59 @@ Kullanıcı → FastAPI → Güvenlik Katmanı → Mistral (lokal) → Yanıt
 | 1 | Ortam kurulumu | ✅ Tamamlandı |
 | 2 | GitHub + klasör yapısı | ✅ Tamamlandı |
 | 3 | İlk FastAPI sunucusu | ✅ Tamamlandı |
-| 4 | Kullanıcı girişi + JWT | 🔄 Devam ediyor |
-| 5 | Mistral bağlantısı | ⏳ Bekliyor |
-| 6 | RAG + Qdrant | ⏳ Bekliyor |
-| 7 | Güvenlik testleri | ⏳ Bekliyor |
+| 4 | Kullanıcı girişi + JWT | ✅ Tamamlandı |
+| 5 | Mistral bağlantısı | ✅ Tamamlandı |
+| 6 | RAG + Qdrant | ✅ Tamamlandı |
+| 7 | Güvenlik katmanları | ✅ Tamamlandı |
+| 8 | Next.js arayüzü | ✅ Tamamlandı |
+| 9 | Gerçek HR belgeleri | ⏳ Bekliyor |
+| 10 | PostgreSQL entegrasyonu | ⏳ Bekliyor |
+| 11 | SSO / Active Directory | ⏳ Bekliyor |
 
 ---
 
 ## Kurulum
+
+### Backend
 ```bash
 cd backend
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+python belge_yukle.py
+uvicorn app.main:app --reload --host 0.0.0.0
 ```
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Gereksinimler
+- Python 3.11+
+- Node.js 18+
+- Docker Desktop (Qdrant için)
+- LM Studio + Mistral 7B modeli
+
+---
+
+## Test Kullanıcıları
+
+| Kullanıcı | Şifre | Rol |
+|-----------|-------|-----|
+| ahmet | test1234 | Çalışan |
+| fatma | test1234 | Yönetici |
+| ik | test1234 | İK |
 
 ---
 
 ## Teknoloji
 
-- **Backend:** Python + FastAPI
+- **Backend:** Python 3.11 + FastAPI
+- **Frontend:** Next.js 15 + Tailwind CSS
 - **LLM:** Mistral 7B (LM Studio)
 - **Vektör DB:** Qdrant
-- **Auth:** JWT
+- **Auth:** JWT + bcrypt
+- **Güvenlik:** 3 katmanlı guardrail + ban sistemi
