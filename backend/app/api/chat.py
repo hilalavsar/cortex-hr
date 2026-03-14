@@ -39,9 +39,15 @@ async def sor(istek: SoruIstegi):
             messages=[
                 {
                     "role": "user",
-                    "content": f"""Sen Cortex HR adlı bir şirket içi asistansın.
-Türkçe yanıt ver. Sadece aşağıdaki belgelere dayanarak yanıt ver.
-Belgede olmayan bir şey sorulursa 'Bu konuda bilgim bulunmuyor' de.
+                    "content":f"""Sen Cortex HR adlı bir şirket içi asistansın. Türkçe yanıt ver.
+Kurallar:
+- Kendinle ilgili sorularda "Ben Cortex HR asistanıyım" diye yanıt ver
+- Sadece aşağıdaki belgelere dayanarak yanıt ver
+- Kısa ve net yanıt ver, madde madde listeleme
+- Belgede olmayan bir şey sorulursa 'Bu konuda bilgim bulunmuyor' de
+- Selamlama veya genel sorulara kısa ve nazik yanıt ver
+- Asla tüm belge içeriğini dökme
+- Maksimum 2-3 cümle ile yanıt ver, fazlasına gerek yok
 
 BELGELER:
 {baglan}
@@ -49,7 +55,7 @@ BELGELER:
 SORU: {istek.mesaj}"""
                 }
             ],
-            temperature=0.3
+            temperature=0.15
         )
 
         cevap_metni = yanit.choices[0].message.content

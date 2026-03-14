@@ -13,6 +13,9 @@ INJECTION_KALIPLARI = [
     re.compile(r"jailbreak", re.I),
     re.compile(r"system\s*prompt\s*(göster|ver|nedir)", re.I),
     re.compile(r"(admin|root)\s*(mod|mode|yetkisi)", re.I),
+    re.compile(r"sistem\s*prompt.*unut", re.I),
+    re.compile(r"(unut|forget).*(prompt|talimat|kural)", re.I),
+    re.compile(r"(admin|yönetici)\s*(yetkisi|erişimi)\s*ver", re.I),
 ]
 
 HASSAS_KALIPLER = [
@@ -131,10 +134,8 @@ def _akrostis_mi(metin: str) -> bool:
 
 
 def _asiri_bosluk_mu(metin: str) -> bool:
-    """Kelimeler arasına bırakılan aşırı boşluk tespiti."""
-    if re.search(r" {3,}", metin):
-        return True
-    if re.search(r"(\b\w \w \w\b)", metin):
+    # Sadece "s i f r e" gibi harf harf boşluklu gizleme tekniğini yakala
+    if re.search(r"(\b\w \w \w \w\b)", metin):
         return True
     return False
 

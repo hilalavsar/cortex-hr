@@ -8,19 +8,19 @@ router = APIRouter(prefix="/auth", tags=["Giriş"])
 KULLANICILAR = {
     "ahmet": {
         "id": "usr_001",
-        "sifre": sifreyi_hashle("test1234"),
+        "sifre": "$2b$12$fDd9YOOpbdfsHzVFmfDkaeWc1b.ukjbzBP6XeqFpWbDBVicvOf9iG",
         "rol": "calisan",
         "ad": "Ahmet Yılmaz"
     },
     "fatma": {
         "id": "usr_002",
-        "sifre": sifreyi_hashle("test1234"),
+        "sifre": "$2b$12$fDd9YOOpbdfsHzVFmfDkaeWc1b.ukjbzBP6XeqFpWbDBVicvOf9iG",
         "rol": "yonetici",
         "ad": "Fatma Kaya"
     },
     "ik": {
         "id": "usr_003",
-        "sifre": sifreyi_hashle("test1234"),
+        "sifre": "$2b$12$fDd9YOOpbdfsHzVFmfDkaeWc1b.ukjbzBP6XeqFpWbDBVicvOf9iG",
         "rol": "ik",
         "ad": "İK Yöneticisi"
     },
