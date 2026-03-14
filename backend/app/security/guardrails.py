@@ -46,7 +46,8 @@ def giris_denetimi(metin: str) -> dict:
                 "gecti": False,
                 "katman": "giris_denetimi",
                 "tehdit": "prompt_injection",
-                "mesaj": "Güvenlik politikası ihlali tespit edildi."
+                "mesaj": "Bu konuda size yardımcı olamıyorum. Farklı bir soru sormak ister misiniz?"
+               #"mesaj": "Güvenlik politikası ihlali tespit edildi."
             }
 
     for kalip in HASSAS_KALIPLER:
@@ -55,7 +56,8 @@ def giris_denetimi(metin: str) -> dict:
                 "gecti": False,
                 "katman": "giris_denetimi",
                 "tehdit": "hassas_veri_sorgusu",
-                "mesaj": "Bu tür sorgular yetkisiz."
+                #"mesaj": "Bu tür sorgular yetkisiz."
+                "mesaj": "Bu konuda size yardımcı olamıyorum. Farklı bir soru sormak ister misiniz?"
             }
 
     for kalip in HIKAYE_KALIPLARI:
@@ -64,7 +66,8 @@ def giris_denetimi(metin: str) -> dict:
                 "gecti": False,
                 "katman": "giris_denetimi",
                 "tehdit": "hikaye_manipulasyon",
-                "mesaj": "Rol yapma ve hikaye senaryoları bu sistemde desteklenmiyor."
+                #"mesaj": "Rol yapma ve hikaye senaryoları bu sistemde desteklenmiyor."
+                "mesaj": "Yalnızca şirket konularında yardımcı olabiliyorum. Başka bir konuda yardımcı olabilir miyim?"
             }
 
     for kalip in SAHTE_YETKI_KALIPLARI:
@@ -73,7 +76,8 @@ def giris_denetimi(metin: str) -> dict:
                 "gecti": False,
                 "katman": "giris_denetimi",
                 "tehdit": "sahte_yetki_iddiasi",
-                "mesaj": "Yetki iddiasıyla erişim sağlanamaz."
+                #"mesaj": "Yetki iddiasıyla erişim sağlanamaz."
+                "mesaj": "Yalnızca şirket konularında yardımcı olabiliyorum. Başka bir konuda yardımcı olabilir miyim?"
             }
 
     return {"gecti": True, "katman": "giris_denetimi", "tehdit": None}
@@ -93,11 +97,11 @@ def uzunluk_denetimi(metin: str, yon: str = "input") -> dict:
 
     if len(metin) > limit:
         return {
-            "gecti": False,
-            "katman": "uzunluk_denetimi",
-            "tehdit": f"asiri_uzun_{yon}",
-            "mesaj": f"{'Mesaj' if yon == 'input' else 'Yanıt'} izin verilen uzunluğu aşıyor."
-        }
+        "gecti": False,
+        "katman": "uzunluk_denetimi",
+        "tehdit": f"asiri_uzun_{yon}",
+        "mesaj": "Sorunuzu daha iyi anlayabilmem için biraz daha kısa ve öz yazar mısınız?"
+    }
 
     return {"gecti": True, "katman": "uzunluk_denetimi", "tehdit": None}
 
@@ -204,6 +208,7 @@ def ihlal_kaydet(kullanici_id: str) -> dict:
         return {
             "durum": "banlandi",
             "ihlal_sayisi": ihlal_sayisi,
+            #"mesaj": f"Şu an size yardımcı olamıyorum. Lütfen daha sonra tekrar deneyin.",
             "mesaj": f"Çok fazla güvenlik ihlali. {BAN_SURESI_DAKIKA} dakika erişiminiz askıya alındı.",
         }
     elif ihlal_sayisi == UYARI_ESIGI:
@@ -211,12 +216,15 @@ def ihlal_kaydet(kullanici_id: str) -> dict:
             "durum": "son_uyari",
             "ihlal_sayisi": ihlal_sayisi,
             "mesaj": "⚠️ Son uyarı: Bir daha ihlal tespit edilirse 1 saat erişiminiz askıya alınacak.",
+            #"mesaj": "Yalnızca şirket konularında yardımcı olabiliyorum. Başka bir konuda yardımcı olabilir miyim?",
         }
+    
     else:
         return {
             "durum": "uyarildi",
             "ihlal_sayisi": ihlal_sayisi,
             "mesaj": "⚠️ Güvenlik politikası ihlali. Lütfen sistemi uygun şekilde kullanın.",
+            #"mesaj": "Bu konuda size yardımcı olamıyorum. Farklı bir soru sormak ister misiniz?",
         }
 
 
